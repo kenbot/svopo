@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 object Rule {
   implicit def apply(pf: RuleFunction): Rule = pf match {
@@ -9,9 +9,11 @@ object Rule {
 
 case class Rule(predicate: SVO => Boolean, effect: SVO => SVOs) extends RuleFunction {
   def isDefinedAt(x: SVO) = predicate(x)
-  final def apply(occurrence: SVO): SVOs = if (predicate(occurrence)) {effect(occurrence)} else SVOs.empty
+  final def apply(occurrence: SVO): SVOs = 
+    if (predicate(occurrence)) effect(occurrence) 
+    else SVOs.empty
   
-  def !(implicit u: Universe) {u addRule this}
-  def ![T](x: T)(implicit u: Universe): T = {this ! u; x}
+  def !(implicit u: MutableUniverse) {u addRule this}
+  def ![T](x: => T)(implicit u: MutableUniverse): T = {this ! u; x}
 }
 

@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 
 object SVOPs extends MultipleFactory[SVOP, SVOPs]  {
@@ -18,13 +18,13 @@ class SVOPs(protected val values: Set[SVOP] = Set.empty) extends Multiple[SVOP, 
 
 
 case class SVOP(override val svo: SVO, override val prep: Preposition) extends SVOPs with Single[SVOP, SVOPs] /*with SVOWithoutObject*/ {
-  def -(obj: Noun) = ComplexSVO(svo, PrepObject(prep,obj))
+  def -(obj: Noun) = SVOPO(svo, PO(prep,obj))
 
   // Query for all known objects to this query 
   override def -*(implicit u: Universe): Nouns = u select { 
-    case svopo: ComplexSVO => svopo match {
-      case `svo`--`prep`-o => o
-    } 
+    case svopo: SVOPO => svopo match {
+      case `svo`--`prep`-o => o // Bug: match error
+    }
   }
   override def toString() = svo + "--" + prep
   override def equalityValue = (svo, prep)

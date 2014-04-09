@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 
 object SVOs extends MultipleFactory[SVO, SVOs] {
@@ -6,7 +6,10 @@ object SVOs extends MultipleFactory[SVO, SVOs] {
 }
 
 sealed trait SVOs extends Multiple[SVO, SVOs]  {
-  def --(preps: Prepositions): SVOPs = for (svo <- this; p <- preps) yield svo--p
+  def --(preps: Prepositions): SVOPs = for {
+    svo <- this
+    p <- preps
+  } yield svo--p
 
   protected def factory = SVOs
   
@@ -14,9 +17,9 @@ sealed trait SVOs extends Multiple[SVO, SVOs]  {
   def verb: Verbs
   def obj: Nouns
   
-  def ![T](x: T)(implicit u: Universe): T = {this ! u; x}
-  def !(implicit u: Universe) {this foreach u.add}
-  def ?[T](x: T)(implicit u: Universe): T = {this ? u; x}
+  def ![T](x: => T)(implicit u: MutableUniverse): T = {this ! u; x}
+  def !(implicit u: MutableUniverse) {this foreach u.add}
+  def ?[T](x: => T)(implicit u: Universe): T = {this ? u; x}
   def ?(implicit u: Universe) = this exists u.exists
 }
 
@@ -33,37 +36,34 @@ sealed abstract class SVO extends SVOs with Single[SVO, SVOs] {
   val obj: Noun
   def sv: SV
   val weight: Double
-  def prepObjects: List[PrepObject]
-  //def withoutObject: SVOWithoutObject
+  def pos: List[PO]
 }
 
 case class SimpleSVO(sv: SV, obj: Noun) extends SVO {
   val subj: Noun = sv.subj
   val verb: Verb = sv.verb
   val weight = 1.0
-  def prepObjects = Nil
+  def pos = Nil
   override def toString() = sv + "-" + obj
   override def equalityValue = (sv, obj)
-  //def withoutObject = sv
 }
 
-case class ComplexSVO(svo: SVO, po: PrepObject) extends SVO {
+case class SVOPO(svo: SVO, po: PO) extends SVO {
   val subj = svo.subj
   val verb = svo.verb
   val obj = svo.obj
   def sv = svo.sv
   def svop = svo--po.prep
   val weight = svo.weight
-  def prepObjects = po :: svo.prepObjects
+  def pos = po :: svo.pos
   override def equalityValue = (svo, po)
   override def toString() = svo + "--" + po
-  //def withoutObject = svop
 }
 
 object - {
   def unapply(sv: SV): Option[(Noun, Verb)] = Some(sv.subj, sv.verb)
   def unapply(svo: SVO): Option[(SV, Noun)] = Some( (svo.sv, svo.obj) )
-  def unapply(svo: ComplexSVO): Option[(SVOP, Noun)] = Some( (svo.svop, svo.po.obj) )
+  def unapply(svo: SVOPO): Option[(SVOP, Noun)] = Some( (svo.svop, svo.po.obj) )
 }
 
 

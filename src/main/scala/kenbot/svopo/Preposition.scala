@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 
 object Prepositions extends MultipleFactory[Preposition, Prepositions] {

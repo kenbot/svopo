@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 object SVs extends MultipleFactory[SV, SVs]  {
   protected def newMultiple(ss: Set[SV]) = new SVs(ss)
@@ -11,7 +11,10 @@ class SVs(protected val values: Set[SV] = Set.empty) extends Multiple[SV, SVs] /
   def verb: Verbs = map(_.verb)
 
   // Query for all known objects to this query 
-  def -*(implicit u: Universe): Nouns = for (sv <- this; o <- sv-*) yield o
+  def -*(implicit u: Universe): Nouns = for {
+    sv <- this
+    o <- sv-*
+  } yield o
 }
 
 

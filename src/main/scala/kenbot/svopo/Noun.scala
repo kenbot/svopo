@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 
 object Nouns extends MultipleFactory[Noun, Nouns] {
@@ -29,9 +29,9 @@ object Noun {
 abstract class Noun extends ManyNouns with Single[Noun, Nouns] with Word {
   def -(v: Verb) = new SV(this, v)
   def n: this.type = this
-  def ==> (n: Noun)(implicit u: Universe) {u.addImplies(this, n)}
-  def <== (n: Noun)(implicit u: Universe) {u.addImplies(n, this)}
-  def <==> (n: Noun)(implicit u: Universe) {
+  def ==> (n: Noun)(implicit u: MutableUniverse) {u.addImplies(this, n)}
+  def <== (n: Noun)(implicit u: MutableUniverse) {u.addImplies(n, this)}
+  def <==> (n: Noun)(implicit u: MutableUniverse) {
     this ==> n
     this <== n
   }
@@ -39,20 +39,9 @@ abstract class Noun extends ManyNouns with Single[Noun, Nouns] with Word {
 
 case class SimpleNoun(name: String) extends Noun 
 
-case class SVONoun(svo: SVO) extends Noun{
+case class SVONoun(svo: SVO) extends Noun {
   override def name = "(" + svo + ")"
   override def equalityValue = svo
 }
 
 
-/*
-sealed trait Variable
-
-case object * extends Variable
-
-object Variable {
-  implicit def var2Noun(v: Variable) = new Noun(v.toString) with Variable
-  implicit def var2Verb(v: Variable) = new Verb(v.toString) with Variable
-  implicit def var2Preposition(v: Variable) = new Preposition(v.toString) with Variable
-}
-*/

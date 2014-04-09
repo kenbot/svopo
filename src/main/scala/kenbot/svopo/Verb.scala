@@ -1,4 +1,4 @@
-package svo
+package kenbot.svopo
 
 
 
@@ -12,9 +12,9 @@ class Verbs(protected val values: Set[Verb] = Set.empty) extends Multiple[Verb, 
 
 case class Verb(name: String) extends Verbs with Single[Verb, Verbs] with Word {
   def v: this.type = this
-  def ==> (v: Verb)(implicit u: Universe) {u.addImplies(this, v)}
-  def <== (v: Verb)(implicit u: Universe) {u.addImplies(v, this)}
-  def <==> (v: Verb)(implicit u: Universe) {
+  def ==> (v: Verb)(implicit u: MutableUniverse) {u.addImplies(this, v)}
+  def <== (v: Verb)(implicit u: MutableUniverse) {u.addImplies(v, this)}
+  def <==> (v: Verb)(implicit u: MutableUniverse) {
     this ==> v
     this <== v
   }
