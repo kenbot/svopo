@@ -13,46 +13,32 @@ Example usages:
 
 # Declare SVO facts
 ```scala
-<pre>
-<code>
   implicit val universe = MutableUniverse()
   
   'bob-'friends-'sally!
   // Added: bob-friends-sally
-</code>
-</pre>
 ```
 
 # Preposition - Indirect Objects
 Add any number of Preposition-Object clauses to an SVO construction, using a double hyphen. Facts can be treated as nouns themselves, and composed.
 ```scala
-<pre>
-<code>
   'jim-'attended-'geography_class--'on-'tuesday--'after-'maths_class--'because-('jim-'enrolled-'geography_class)!
   'jane-'attended-'geography_class--'on-'wednesday--'because-('jane-'enjoys-'geography_class)!
   'jim-'attended-'maths_class--'on-'tuesday--'before-'geography_class!
   // Added: jim-attended-geography_class--on-tuesday--after-maths_class--because-(jim-enrolled-geography_class)
   // Added: jane-attended-geography_class--on-wednesday--because-(jane-enjoys-geography_class)
   // Added: jim-attended-maths_class--on-tuesday--before-geography_class
-</code>
-</pre>
 
 # Pattern match!
 ```scala
-<pre>
-<code>
   universe select {
     case student-`attended`-`geography_class` => student
   }
   // geographyStudents: svo.Nouns = ManyNouns(jim,jane)
-</code>
-</pre>
 ```
 
 # Use wildcards as syntax sugar for universe.select() queries.
 ```scala
-<pre>
-<code>
   *-('attended)-'geography_class
   // res9: svopo.Nouns = ManyNouns(jane,jim)
   
@@ -60,6 +46,4 @@ Add any number of Preposition-Object clauses to an SVO construction, using a dou
   // res10: svopo.Verbs = attended
   
 
-</code>
-</pre>
 ```
